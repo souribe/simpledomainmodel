@@ -81,60 +81,81 @@ public struct Money {
     }
 }
 
-////////////////////////////////////
+//////////////////////////////////
 // Job
 //
-//open class Job {
-//  fileprivate var title : String
-//  fileprivate var type : JobType
+open class Job {
+  fileprivate var title : String
+  fileprivate var type : JobType
+
+  public enum JobType {
+    case Hourly(Double)
+    case Salary(Int)
+  }
+
+  public init(title : String, type : JobType) {
+    self.title = title
+    self.type = type
+  }
+
+  open func calculateIncome(_ hours: Int) -> Int {
+    switch type {
+    case .Hourly(let rate):
+        return Int(rate) * hours
+    case .Salary(let wage):
+        return wage
+    }
+  }
+
+  open func raise(_ amt : Double) {
+    switch type {
+    case .Hourly(let rate):
+        self.type = JobType.Hourly(rate + amt)
+    case .Salary(let wage):
+        self.type = JobType.Salary(wage + Int(amt))
+    }
+  }
+}
+
+////////////////////////////////////
+// Person
 //
-//  public enum JobType {
-//    case Hourly(Double)
-//    case Salary(Int)
-//  }
-//
-//  public init(title : String, type : JobType) {
-//  }
-//
-//  open func calculateIncome(_ hours: Int) -> Int {
-//  }
-//
-//  open func raise(_ amt : Double) {
-//  }
-//}
-//
-//////////////////////////////////////
-//// Person
-////
-//open class Person {
-//  open var firstName : String = ""
-//  open var lastName : String = ""
-//  open var age : Int = 0
-//
-//  fileprivate var _job : Job? = nil
-//  open var job : Job? {
-//    get { }
-//    set(value) {
-//    }
-//  }
-//
-//  fileprivate var _spouse : Person? = nil
-//  open var spouse : Person? {
-//    get { }
-//    set(value) {
-//    }
-//  }
-//
-//  public init(firstName : String, lastName: String, age : Int) {
-//    self.firstName = firstName
-//    self.lastName = lastName
-//    self.age = age
-//  }
-//
-//  open func toString() -> String {
-//  }
-//}
-//
+open class Person {
+  open var firstName : String = ""
+  open var lastName : String = ""
+  open var age : Int = 0
+
+  fileprivate var _job : Job? = nil
+  open var job : Job? {
+    get {
+        return self._job
+    }
+    set(value) {
+        self.job = value
+    }
+  }
+
+  fileprivate var _spouse : Person? = nil
+  open var spouse : Person? {
+    get {
+        return self._spouse
+    }
+    set(value) {
+        self._spouse = value
+    }
+  }
+
+  public init(firstName : String, lastName: String, age : Int) {
+    self.firstName = firstName
+    self.lastName = lastName
+    self.age = age
+  }
+
+  open func toString() -> String {
+    return "[Person: firstName:\(self.firstName) lastName:\(self.lastName) age:\(self.age) job:\(String(describing: self._job)) spouse:\(String(describing: self._spouse))]"
+  }
+}
+
 //////////////////////////////////////
 //// Family
 ////
